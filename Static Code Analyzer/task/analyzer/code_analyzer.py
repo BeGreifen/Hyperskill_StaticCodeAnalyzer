@@ -1,3 +1,5 @@
+import argparse
+
 class CodeAnalyzer:
     def __init__(self, file):
         self.file = file
@@ -145,9 +147,19 @@ class CodeAnalyzer:
             pass
 
 
-def run_codeanalyzer():
-    ca = CodeAnalyzer(input())
-    # ca = CodeAnalyzer("test.txt")
+def set_argparse() -> argparse:
+    parser = argparse.ArgumentParser(description="This program checks python codes.")
+    parser.add_argument("filepath")
+    return parser
+
+
+def get_argparse():
+    parser = set_argparse()
+    return parser.parse_args()
+
+
+def run_codeanalyzer(filepath: str):
+    ca = CodeAnalyzer(filepath)
     ca.analyze()
     ca.show_results()
 
