@@ -9,6 +9,7 @@ class CodeAnalyzer:
         self.ck_s003 = self.__EndingSemicolon(id="S003", message="Unnecessary semicolon after a statement")
         self.ck_s004 = self.__NoTwoSpaces(id="S004", message="Less than two spaces before inline comments")
         self.ck_s005 = self.__TODO(id="S005", message="TODO found")
+        self.ck_s006 = self.__TwoBlankLines(id="S006", message="More than two blank lines preceding a code line")
         self.checklist = self.init_checks()
 
     def get_lines(self):
@@ -128,6 +129,21 @@ class CodeAnalyzer:
                         self.add_breach(line_number, self.id, self.message)
                 else:
                     pass
+            pass
+
+    class __TwoBlankLines(Check):
+        def __init__(self, id, message):
+            super().__init__(id, message, check_by_line=False)
+
+        def run_check(self, content):
+            count = 0
+            for line_number, line_content in enumerate(content, start = 1):
+                if line_content == '\n':
+                    count += 1
+                else:
+                    if count > 2:
+                        self.add_breach(line_number, self.id, self.message)
+
             pass
 
 
