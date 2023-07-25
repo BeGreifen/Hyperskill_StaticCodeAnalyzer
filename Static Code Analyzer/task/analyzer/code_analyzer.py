@@ -67,5 +67,10 @@ def run_codeanalyzer():
 
 
 if __name__ == "__main__":
+    passwords =["asd", "adasd", "test"]
+    sorted_passwords = sorted(passwords, key=len, reverse=True)
+    print(*[f"\r{pw} {(lambda x: len(x))(pw)} \n" for pw in sorted_passwords])
+
+
     run_codeanalyzer()
 
