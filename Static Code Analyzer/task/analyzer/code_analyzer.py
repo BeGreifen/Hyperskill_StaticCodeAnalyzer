@@ -107,7 +107,7 @@ class CodeAnalyzer:
 
         def run_check(self, line_number, line_to_analyze):
             stripped_line_to_analyze = line_to_analyze.lstrip().rstrip()
-            if len(stripped_line_to_analyze) > 0:
+            if stripped_line_to_analyze != "\n":
                 if self.is_comment_line(stripped_line_to_analyze):
                     if (stripped_line_to_analyze[0] == "#") or ("  #" in stripped_line_to_analyze):
                         pass
@@ -123,7 +123,7 @@ class CodeAnalyzer:
 
         def run_check(self, line_number, line_to_analyze):
             stripped_line_to_analyze = line_to_analyze.lstrip().rstrip()
-            if len(stripped_line_to_analyze) > 0:
+            if stripped_line_to_analyze != "\n":
                 if self.is_comment_line(line_to_analyze):
                     if "TODO" in line_to_analyze:
                         self.add_breach(line_number, self.id, self.message)
