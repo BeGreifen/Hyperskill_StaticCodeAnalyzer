@@ -165,4 +165,4 @@ def run_codeanalyzer(filepath: str):
 
 
 if __name__ == "__main__":
-    run_codeanalyzer()
+    run_codeanalyzer(get_argparse())
