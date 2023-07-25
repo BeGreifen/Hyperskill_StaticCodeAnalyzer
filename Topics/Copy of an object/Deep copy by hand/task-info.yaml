@@ -1,4 +1,8 @@
 type: sorting
+options:
+- "my_copy[0][0] = my_copy[0][0].copy()"
+- "my_copy[0] = my_copy[0].copy()"
+- my_copy = my_copy.copy()
 files:
 - name: main.py
   visible: true
@@ -9,3 +13,7 @@ files:
 feedback_link: https://hyperskill.org/learn/step/9273#comment
 status: Solved
 record: -1
+ordering:
+- 0
+- 1
+- 2

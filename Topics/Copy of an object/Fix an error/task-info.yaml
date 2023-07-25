@@ -1,5 +1,14 @@
 type: choice
 is_multiple_choice: false
+options:
+- text: Bob has been added to the swimming list. This needs to be fixed by using the
+    deepcopy() function when creating the swimming list.
+- text: Bob and Kate have been added to the classmates list. This needs to be fixed
+    by using the deepcopy() function when creating the cinema and swimming lists.
+- text: Kate has been added to the cinema list. This needs to be fixed by using the
+    copy() function when creating the cinema list.
+- text: "Bob has been added to the classmates list. This needs to be fixed by using\
+    \ copy() function, when creating the cinema list."
 files:
 - name: main.py
   visible: true
