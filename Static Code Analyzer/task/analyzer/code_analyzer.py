@@ -1,4 +1,7 @@
+import os
+import glob
 import argparse
+
 
 class CodeAnalyzer:
     def __init__(self, file):
@@ -45,7 +48,7 @@ class CodeAnalyzer:
                 result_output.append(result)
         result_output.sort(key=lambda x: (x[0], x[1]))
         for line, check, message in result_output:
-            print(f"Line {line}: {check} {message}")
+            print(f"{self.file}: Line {line}: {check} {message}")
 
     class Check:
         def __init__(self, id: str, message: str, check_by_line: bool):
@@ -149,19 +152,42 @@ class CodeAnalyzer:
 
 def set_argparse() -> argparse:
     parser = argparse.ArgumentParser(description="This program checks python codes.")
-    parser.add_argument("filepath")
+    parser.add_argument("-f",
+                        "--filepath",
+                        help="enter a file or a path with python files"
+#                        , default="C:\\Users\\Bernhard\\PycharmProjects\\Static Code Analyzer"
+#                                "\\Static Code Analyzer\\task\\test"
+                        )
     return parser
 
 
 def get_argparse():
     parser = set_argparse()
-    return parser.parse_args()
+    args = parser.parse_args()
+    return args.filepath
+
+
+def get_files(filepath: str) -> list:
+    py_files = []
+    if filepath is not None:
+        if os.path.isdir(filepath):
+            # If filepath is a directory, find all '.py' files in this directory (recursively)
+            py_files.extend(glob.glob(f"{filepath}/**/*.py", recursive=True))
+        elif os.path.isfile(filepath) and filepath.endswith('.py'):
+            # If filepath is a file ending with '.py', add it to the list
+            py_files.append(filepath)
+    else:
+        py_files = None
+    return py_files
 
 
 def run_codeanalyzer(filepath: str):
-    ca = CodeAnalyzer(filepath)
-    ca.analyze()
-    ca.show_results()
+    py_file_list = get_files(filepath)
+    if py_file_list is not None:
+        for py_file in py_file_list:
+            ca = CodeAnalyzer(py_file)
+            ca.analyze()
+            ca.show_results()
 
 
 if __name__ == "__main__":
