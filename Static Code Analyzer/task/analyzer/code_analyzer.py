@@ -6,6 +6,9 @@ class CodeAnalyzer:
         self.checklist = []
         self.ck_s001 = self.__IsLineTooLong(id="S001", message="Too Long", limit=79)
         self.ck_s002 = self.__IndentationIsNotFour(id="S002", message="Indentation is not a multiple of four", limit=4)
+        self.ck_s003 = self.__EndingSemicolon(id="S003", message="Unnecessary semicolon after a statement")
+        self.ck_s004 = self.__NoTwoSpaces(id="S004", message="Less than two spaces before inline comments")
+        self.ck_s005 = self.__TODO(id="S005", message="TODO found")
         self.checklist = self.init_checks()
 
     def get_lines(self):
@@ -76,6 +79,42 @@ class CodeAnalyzer:
             if (len(line_to_analyze) - len(line_to_analyze.lstrip())) % self.limit != 0:
                 self.add_breach(line_number, self.id, self.message)
             pass
+
+    class __EndingSemicolon(Check):
+        def run_check(self, line_number, line_to_analyze):
+            stripped_line_to_analyze = line_to_analyze.rstrip()
+            if self.is_comment_line(line_to_analyze):
+                pass
+            else:
+                if len(stripped_line_to_analyze) > 0:
+                    if stripped_line_to_analyze[-1] == ";":
+                        self.add_breach(line_number, self.id, self.message)
+            pass
+
+    class __NoTwoSpaces(Check):
+        def run_check(self, line_number, line_to_analyze):
+            stripped_line_to_analyze = line_to_analyze.lstrip().rstrip()
+            if len(stripped_line_to_analyze) > 0:
+                if self.is_comment_line(stripped_line_to_analyze):
+                    if (stripped_line_to_analyze[0] == "#") or ("  #" in stripped_line_to_analyze):
+                        pass
+                    else:
+                        self.add_breach(line_number, self.id, self.message)
+                else:
+                    pass
+            pass
+
+    class __TODO(Check):
+        def run_check(self, line_number, line_to_analyze):
+            stripped_line_to_analyze = line_to_analyze.lstrip().rstrip()
+            if len(stripped_line_to_analyze) > 0:
+                if self.is_comment_line(line_to_analyze):
+                    if "TODO" in line_to_analyze:
+                        self.add_breach(line_number, self.id, self.message)
+                else:
+                    pass
+            pass
+
 
 def run_codeanalyzer():
     ca = CodeAnalyzer(input())
