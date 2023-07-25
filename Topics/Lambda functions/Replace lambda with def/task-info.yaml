@@ -1,0 +1,16 @@
+type: code
+files:
+- name: main.py
+  visible: true
+  highlight_level: NONE
+  text: |-
+    def my_function():
+        return
+  learner_created: false
+feedback_link: https://hyperskill.org/learn/step/7098#comment
+status: Solved
+feedback:
+  message: <html>Correct solution</html>
+  time: "Tue, 25 Jul 2023 08:15:56 UTC"
+record: -1
+submission_language: python3
