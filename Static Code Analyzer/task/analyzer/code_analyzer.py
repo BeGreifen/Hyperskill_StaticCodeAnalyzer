@@ -99,6 +99,8 @@ class CodeAnalyzer:
                 try:
                     if stripped_line_to_analyze[-1] == ";":
                         self.add_breach(line_number, self.id, self.message)
+                except Exception as e:
+                    pass
             pass
 
     class __NoTwoSpaces(Check):
