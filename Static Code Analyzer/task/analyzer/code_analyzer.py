@@ -1,4 +1,3 @@
-# write your code here
 class CodeAnalyzer:
     def __init__(self, file):
         self.file = file
@@ -49,6 +48,11 @@ class CodeAnalyzer:
         def get_breaches(self):
             return self.results
 
+        def is_comment_line(self,line_to_analyze):
+            if "#" in line_to_analyze:
+                return True
+            return False
+
     class __IsLineTooLong(Check):
         def __init__(self, id, message, limit):
             self.limit = limit
@@ -71,7 +75,7 @@ class CodeAnalyzer:
 
 def run_codeanalyzer():
     ca = CodeAnalyzer(input())
-
+    #ca = CodeAnalyzer("test.txt")
     ca.analyze()
     ca.show_results()
 
