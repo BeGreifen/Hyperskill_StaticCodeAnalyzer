@@ -12,3 +12,5 @@ content:
 - Sorting a list
 - Copy of an object
 - Regexps in Python
+- Escaping in regexps
+- Regexp sets and ranges
