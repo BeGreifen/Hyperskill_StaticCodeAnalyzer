@@ -141,7 +141,7 @@ class CodeAnalyzer:
                 else:
                     if count > 2:
                         self.add_breach(line_number, self.id, self.message)
-
+                        count = 0
             pass
 
 
