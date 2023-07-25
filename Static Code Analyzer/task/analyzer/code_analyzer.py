@@ -72,8 +72,8 @@ class CodeAnalyzer:
             self.limit = limit
             super().__init__(id, message, check_by_line=True)
 
-        def run_check(self,line_number,line_to_analyze):
-            if len(line_to_analyze) >= self.limit:
+        def run_check(self, line_number, line_to_analyze):
+            if len(line_to_analyze) > self.limit:
                 self.add_breach(line_number, self.id, self.message)
             pass
 
