@@ -135,7 +135,7 @@ class CodeAnalyzer:
 
         def run_check(self, content):
             count = 0
-            for line_number, line_content in enumerate(content, start = 1):
+            for line_number, line_content in enumerate(content, start=1):
                 if line_content == '\n':
                     count += 1
                 else:
