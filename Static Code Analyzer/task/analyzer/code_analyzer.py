@@ -33,7 +33,10 @@ class CodeAnalyzer:
         self.__collect_results()
         for check in self.results:
             for result in check:
-                print(f"Line {result[0]}: {result[1]} {result[2]}")
+                result_output.append(result)
+        result_output.sort(key=lambda x: (x[0], x[1]))
+        for line, check, message in result_output:
+            print(f"Line {line}: {check} {message}")
 
     class Check:
         def __init__(self, id: str, message: str):
