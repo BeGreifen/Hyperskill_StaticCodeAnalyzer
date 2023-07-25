@@ -31,6 +31,7 @@ class CodeAnalyzer:
 
     def show_results(self):
         self.__collect_results()
+        result_output = []
         for check in self.results:
             for result in check:
                 result_output.append(result)
