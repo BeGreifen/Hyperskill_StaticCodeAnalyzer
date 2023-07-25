@@ -147,12 +147,13 @@ class CodeAnalyzer:
 
 def set_argparse() -> argparse:
     parser = argparse.ArgumentParser(description="This program checks python codes.")
-    parser.add_argument("-f",
-                        "--filepath",
-                        help="enter a file or a path with python files"
+#    parser.add_argument("-f",
+#                        "--filepath",
+#                        help="enter a file or a path with python files"
 #                        , default="C:\\Users\\Bernhard\\PycharmProjects\\Static Code Analyzer"
 #                                "\\Static Code Analyzer\\task\\test"
-                        )
+#                       )
+    parser.add_argument("filepath")
     return parser
 
 
