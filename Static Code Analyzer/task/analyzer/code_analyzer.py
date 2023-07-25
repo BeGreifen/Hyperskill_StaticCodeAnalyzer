@@ -22,10 +22,12 @@ class CodeAnalyzer:
         return self.checklist
 
     def analyze(self):
-        for line_number, line_content in enumerate(self.content, start=1):
-            for name, check_obj in self.checklist.items():
-                check_obj.run_check(line_number, str(line_content))
-        pass
+        for name, check_obj in self.checklist.items():
+            if check_obj.by_line_check():
+                for line_number, line_content in enumerate(self.content, start=1):
+                    check_obj.run_check(line_number, str(line_content))
+            else:
+                check_obj.run_check(self.content)
 
     def __collect_results(self):
         for name, check_obj in self.checklist.items():
@@ -43,10 +45,11 @@ class CodeAnalyzer:
             print(f"Line {line}: {check} {message}")
 
     class Check:
-        def __init__(self, id: str, message: str):
+        def __init__(self, id: str, message: str, check_by_line: bool):
             self.id = id
             self.message = message
             self.results = []
+            self.check_by_line = check_by_line
 
         def add_breach(self, line_number: int,  id: str, message: str):
             self.results.append([line_number, id, message])
@@ -54,6 +57,9 @@ class CodeAnalyzer:
 
         def get_breaches(self):
             return self.results
+
+        def by_line_check(self):
+            return self.check_by_line
 
         def is_comment_line(self,line_to_analyze):
             if "#" in line_to_analyze:
@@ -63,7 +69,7 @@ class CodeAnalyzer:
     class __IsLineTooLong(Check):
         def __init__(self, id, message, limit):
             self.limit = limit
-            super().__init__(id, message)
+            super().__init__(id, message, check_by_line=True)
 
         def run_check(self,line_number,line_to_analyze):
             if len(line_to_analyze) >= self.limit:
@@ -73,7 +79,7 @@ class CodeAnalyzer:
     class __IndentationIsNotFour(Check):
         def __init__(self, id, message, limit):
             self.limit = limit
-            super().__init__(id, message)
+            super().__init__(id, message, check_by_line=True)
 
         def run_check(self, line_number, line_to_analyze):
             if (len(line_to_analyze) - len(line_to_analyze.lstrip())) % self.limit != 0:
@@ -81,6 +87,9 @@ class CodeAnalyzer:
             pass
 
     class __EndingSemicolon(Check):
+        def __init__(self, id, message):
+            super().__init__(id, message, check_by_line=True)
+
         def run_check(self, line_number, line_to_analyze):
             stripped_line_to_analyze = line_to_analyze.rstrip()
             if self.is_comment_line(line_to_analyze):
@@ -92,6 +101,9 @@ class CodeAnalyzer:
             pass
 
     class __NoTwoSpaces(Check):
+        def __init__(self, id, message):
+            super().__init__(id, message, check_by_line=True)
+
         def run_check(self, line_number, line_to_analyze):
             stripped_line_to_analyze = line_to_analyze.lstrip().rstrip()
             if len(stripped_line_to_analyze) > 0:
@@ -105,6 +117,9 @@ class CodeAnalyzer:
             pass
 
     class __TODO(Check):
+        def __init__(self, id, message):
+            super().__init__(id, message, check_by_line=True)
+
         def run_check(self, line_number, line_to_analyze):
             stripped_line_to_analyze = line_to_analyze.lstrip().rstrip()
             if len(stripped_line_to_analyze) > 0:
@@ -117,8 +132,8 @@ class CodeAnalyzer:
 
 
 def run_codeanalyzer():
-    ca = CodeAnalyzer(input())
-    #ca = CodeAnalyzer("test.txt")
+    #ca = CodeAnalyzer(input())
+    ca = CodeAnalyzer("test.txt")
     ca.analyze()
     ca.show_results()
 
