@@ -83,7 +83,9 @@ class CodeAnalyzer:
             super().__init__(id, message, check_by_line=True)
 
         def run_check(self, line_number, line_to_analyze):
-            if (len(line_to_analyze) - len(line_to_analyze.lstrip())) % self.limit != 0:
+            if (line_to_analyze != "\n") \
+                    and \
+                    ((len(line_to_analyze) - len(line_to_analyze.lstrip())) % self.limit != 0):
                 self.add_breach(line_number, self.id, self.message)
             pass
 
@@ -92,11 +94,9 @@ class CodeAnalyzer:
             super().__init__(id, message, check_by_line=True)
 
         def run_check(self, line_number, line_to_analyze):
-            stripped_line_to_analyze = line_to_analyze.rstrip()
-            if self.is_comment_line(line_to_analyze):
-                pass
-            else:
-                if len(stripped_line_to_analyze) > 0:
+            if line_to_analyze != "\n":
+                stripped_line_to_analyze = line_to_analyze.split('#')[0].rstrip()
+                try:
                     if stripped_line_to_analyze[-1] == ";":
                         self.add_breach(line_number, self.id, self.message)
             pass
