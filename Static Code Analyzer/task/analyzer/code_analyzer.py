@@ -8,24 +8,19 @@ class CodeAnalyzer:
         self.file = file
         self.content = self.get_lines()
         self.results = []
-        self.checklist = []
         self.ck_s001 = self.__IsLineTooLong(id="S001", message="Too Long", limit=79)
         self.ck_s002 = self.__IndentationIsNotFour(id="S002", message="Indentation is not a multiple of four", limit=4)
         self.ck_s003 = self.__EndingSemicolon(id="S003", message="Unnecessary semicolon after a statement")
         self.ck_s004 = self.__NoTwoSpaces(id="S004", message="Less than two spaces before inline comments")
         self.ck_s005 = self.__TODO(id="S005", message="TODO found")
         self.ck_s006 = self.__TwoBlankLines(id="S006", message="More than two blank lines preceding a code line")
-        self.checklist = self.init_checks()
+        self.checklist = {k: v for k, v in self.__dict__.items() if k.startswith("ck_")}
 
     def get_lines(self):
         file_input = open(self.file, 'rt')
         with file_input:
             content = file_input.readlines()
         return content
-
-    def init_checks(self):
-        self.checklist = {k: v for k, v in self.__dict__.items() if k.startswith("ck_")}
-        return self.checklist
 
     def analyze(self):
         for name, check_obj in self.checklist.items():
