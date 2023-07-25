@@ -52,7 +52,7 @@ class CodeAnalyzer:
             self.results = []
             self.check_by_line = check_by_line
 
-        def add_breach(self, line_number: int,  id: str, message: str):
+        def add_breach(self, line_number: int, id: str, message: str):
             self.results.append([line_number, id, message])
             pass
 
@@ -62,7 +62,7 @@ class CodeAnalyzer:
         def by_line_check(self):
             return self.check_by_line
 
-        def is_comment_line(self,line_to_analyze):
+        def is_comment_line(self, line_to_analyze):
             if "#" in line_to_analyze:
                 return True
             return False
@@ -146,12 +146,11 @@ class CodeAnalyzer:
 
 
 def run_codeanalyzer():
-    #ca = CodeAnalyzer(input())
-    ca = CodeAnalyzer("test.txt")
+    ca = CodeAnalyzer(input())
+    # ca = CodeAnalyzer("test.txt")
     ca.analyze()
     ca.show_results()
 
 
 if __name__ == "__main__":
     run_codeanalyzer()
-
