@@ -15,18 +15,18 @@ class CodeAnalyzer:
         return content
 
     def init_checks(self):
-        self.checklist = {element for element in self.__dict__.items() if element.startswith("ck_")}
+        self.checklist = {k: v for k, v in self.__dict__.items() if k.startswith("ck_")}
         return self.checklist
 
     def analyze(self):
-        for line_number, line_content in enumerate(self.content):
-            for check in self.checklist:
-                check.run_check(line_number, str(line_content))
+        for line_number, line_content in enumerate(self.content, start=1):
+            for name, check_obj in self.checklist.items():
+                check_obj.run_check(line_number, str(line_content))
         pass
 
     def __collect_results(self):
-        for individual_check in self.checklist:
-            self.results.append(individual_check.get_breaches())
+        for name, check_obj in self.checklist.items():
+            self.results.append(check_obj.get_breaches())
         pass
 
     def show_results(self):
