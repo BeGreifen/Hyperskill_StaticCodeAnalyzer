@@ -1,0 +1,13 @@
+type: code
+files:
+- name: main.py
+  visible: true
+  text: |-
+    numbers = ["77", "145", "987", "2095", "6", "371", "4999", "81"]
+
+    # sort numbers
+  learner_created: false
+feedback_link: https://hyperskill.org/learn/step/8089#comment
+status: Solved
+record: -1
+submission_language: python3

@@ -5,7 +5,8 @@ class CodeAnalyzer:
         self.content = self.get_lines()
         self.results = []
         self.checklist = []
-        self.iltl = self.__IsLineTooLong(id="S001", message="Too Long", limit=79)
+        self.ck_s001 = self.__IsLineTooLong(id="S001", message="Too Long", limit=79)
+        self.ck_s002 = self.__IndentationIsNotFour(id="S002", message="Indentation is not a multiple of four", limit=4)
         self.checklist = self.init_checks()
 
     def get_lines(self):
@@ -15,7 +16,7 @@ class CodeAnalyzer:
         return content
 
     def init_checks(self):
-        self.checklist.append(self.iltl)
+        self.checklist = {element for element in self.__dict__.items() if element.startswith("ck_")}
         return self.checklist
 
     def analyze(self):
@@ -58,6 +59,15 @@ class CodeAnalyzer:
                 self.add_breach(line_number, self.id, self.message)
             pass
 
+    class __IndentationIsNotFour(Check):
+        def __init__(self, id, message, limit):
+            self.limit = limit
+            super().__init__(id, message)
+
+        def run_check(self, line_number, line_to_analyze):
+            if len(line_to_analyze) - len(line_to_analyze.lstrip()) % self.limit == 0:
+                self.add_breach(line_number, self.id, self.message)
+            pass
 
 def run_codeanalyzer():
     ca = CodeAnalyzer(input())
@@ -67,10 +77,5 @@ def run_codeanalyzer():
 
 
 if __name__ == "__main__":
-    passwords =["asd", "adasd", "test"]
-    sorted_passwords = sorted(passwords, key=len, reverse=True)
-    print(*[f"\r{pw} {(lambda x: len(x))(pw)} \n" for pw in sorted_passwords])
-
-
     run_codeanalyzer()
 
