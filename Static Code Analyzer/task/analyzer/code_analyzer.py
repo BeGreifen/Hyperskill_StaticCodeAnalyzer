@@ -124,14 +124,10 @@ class CodeAnalyzer:
             super().__init__(id, message, check_by_line=True)
 
         def run_check(self, line_number, line_to_analyze):
-            stripped_line_to_analyze = line_to_analyze.lstrip().rstrip()
-            if stripped_line_to_analyze != "\n":
-                if self.is_comment_line(line_to_analyze):
-                    if "TODO" in line_to_analyze:
-                        self.add_breach(line_number, self.id, self.message)
-                else:
-                    pass
-            pass
+            if "# TODO" in line_to_analyze.upper():
+                self.add_breach(line_number, self.id, self.message)
+            else:
+                pass
 
     class __TwoBlankLines(Check):
         def __init__(self, id, message):
