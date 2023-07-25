@@ -61,11 +61,11 @@ class CodeAnalyzer:
 
 def run_codeanalyzer():
     ca = CodeAnalyzer(input())
-    #ca = CodeAnalyzer("test.txt")
+
     ca.analyze()
     ca.show_results()
 
 
 if __name__ == "__main__":
     run_codeanalyzer()
-    #  main()
+
