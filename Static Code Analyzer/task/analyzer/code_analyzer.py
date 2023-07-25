@@ -1,7 +1,7 @@
 import os
 import glob
 import argparse
-
+import re
 
 class CodeAnalyzer:
     def __init__(self, file):
@@ -14,6 +14,9 @@ class CodeAnalyzer:
         self.ck_s004 = self.__NoTwoSpaces(id="S004", message="Less than two spaces before inline comments")
         self.ck_s005 = self.__TODO(id="S005", message="TODO found")
         self.ck_s006 = self.__TwoBlankLines(id="S006", message="More than two blank lines preceding a code line")
+        self.ck_s007 = self.__TooManySpaces(id="S007", message="Too many spaces after construction_name")
+        self.ck_s008 = self.__ClassCamelCase(id="S008", message="No CamelCase")
+        self.ck_s009 = self.__DefLowerCase(id="S009", message="only small letters")
         self.checklist = {k: v for k, v in self.__dict__.items() if k.startswith("ck_")}
 
     def get_lines(self):
@@ -95,12 +98,11 @@ class CodeAnalyzer:
 
         def run_check(self, line_number, line_to_analyze):
             if line_to_analyze != "\n":
-                stripped_line_to_analyze = line_to_analyze.split('#')[0].rstrip()
-                try:
+                stripped_line_to_analyze = line_to_analyze.split('#')[0]
+                stripped_line_to_analyze = stripped_line_to_analyze.rstrip()
+                if len(stripped_line_to_analyze) > 2:
                     if stripped_line_to_analyze[-1] == ";":
                         self.add_breach(line_number, self.id, self.message)
-                except Exception as e:
-                    pass
             pass
 
     class __NoTwoSpaces(Check):
@@ -141,18 +143,49 @@ class CodeAnalyzer:
                 else:
                     if count > 2:
                         self.add_breach(line_number, self.id, self.message)
-                        count = 0
+                    count = 0
             pass
+
+    class __TooManySpaces(Check):
+        def __init__(self, id, message):
+            super().__init__(id, message, check_by_line=True)
+
+        def run_check(self, line_number, line_to_analyze):
+            if line_to_analyze.strip().startswith(('def  ', 'class  ')):
+                self.add_breach(line_number, self.id, self.message)
+
+
+    class __ClassCamelCase(Check):
+        def __init__(self, id, message):
+            super().__init__(id, message, check_by_line=True)
+
+        def run_check(self, line_number, line_to_analyze):
+            regex = r'^class [A-Z][a-z0-9]*([A-Z][a-z0-9]*)*[:\(]'
+            if line_to_analyze.strip().startswith('class '):
+                if re.match(regex, line_to_analyze.strip()):
+                    pass
+                elif line_to_analyze.strip().startswith(('def  ', 'class  ')):
+                    pass
+                else:
+                    self.add_breach(line_number, self.id, self.message)
+
+    class __DefLowerCase(Check):
+        def __init__(self, id, message):
+            super().__init__(id, message, check_by_line=True)
+
+        def run_check(self, line_number, line_to_analyze):
+            regex = r'^def [a-z_]+\('
+            if line_to_analyze.strip().startswith('def '):
+                if re.match(regex, line_to_analyze.strip()):
+                    pass
+                elif line_to_analyze.strip().startswith('def  '):
+                    pass
+                else:
+                    self.add_breach(line_number, self.id, self.message)
 
 
 def set_argparse() -> argparse:
     parser = argparse.ArgumentParser(description="This program checks python codes.")
-#    parser.add_argument("-f",
-#                        "--filepath",
-#                        help="enter a file or a path with python files"
-#                        , default="C:\\Users\\Bernhard\\PycharmProjects\\Static Code Analyzer"
-#                                "\\Static Code Analyzer\\task\\test"
-#                       )
     parser.add_argument("filepath")
     return parser
 
