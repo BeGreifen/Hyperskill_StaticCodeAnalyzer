@@ -8,6 +8,9 @@ files:
     # your code here
   learner_created: false
 feedback_link: https://hyperskill.org/learn/step/15080#comment
-status: Unchecked
+status: Solved
+feedback:
+  message: <html>Correct solution</html>
+  time: "Tue, 25 Jul 2023 18:33:49 UTC"
 record: -1
 submission_language: python3
