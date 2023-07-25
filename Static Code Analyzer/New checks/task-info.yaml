@@ -331,8 +331,8 @@ files:
     Line 5: S001 Too long
   learner_created: true
 feedback_link: https://hyperskill.org/projects/112/stages/610/implement#comment
-status: Failed
+status: Solved
 feedback:
-  message: "Wrong answer in test #4"
-  time: "Tue, 25 Jul 2023 14:31:10 UTC"
-record: -1
+  message: Congratulations!
+  time: "Tue, 25 Jul 2023 14:54:50 UTC"
+record: 2
