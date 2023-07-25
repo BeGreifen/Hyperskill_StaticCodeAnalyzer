@@ -436,8 +436,8 @@ files:
         pass; # Todo something
   learner_created: true
 feedback_link: https://hyperskill.org/projects/112/stages/611/implement#comment
-status: Failed
+status: Solved
 feedback:
-  message: "Wrong answer in test #1"
-  time: "Tue, 25 Jul 2023 17:29:45 UTC"
+  message: Congratulations!
+  time: "Tue, 25 Jul 2023 17:44:34 UTC"
 record: -1
