@@ -435,7 +435,7 @@ files:
         print('NO TODO HERE;;')
         pass; # Todo something
   learner_created: true
-feedback_link: https://hyperskill.org/projects/112/stages/611/implement#comment
+feedback_link: https://hyperskill.org/learn/step/9905#comment
 status: Solved
 feedback:
   message: Congratulations!

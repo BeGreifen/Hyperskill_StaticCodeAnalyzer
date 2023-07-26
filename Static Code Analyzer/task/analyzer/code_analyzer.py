@@ -3,6 +3,7 @@ import glob
 import argparse
 import re
 
+
 class CodeAnalyzer:
     def __init__(self, file):
         self.file = file
@@ -65,6 +66,7 @@ class CodeAnalyzer:
         def by_line_check(self):
             return self.check_by_line
 
+        @staticmethod
         def is_comment_line(self, line_to_analyze):
             if "#" in line_to_analyze:
                 return True

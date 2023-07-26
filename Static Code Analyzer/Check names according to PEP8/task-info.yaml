@@ -463,9 +463,9 @@ files:
         print('NO TODO HERE;;')
         pass; # Todo something
   learner_created: true
-feedback_link: https://hyperskill.org/projects/112/stages/612/implement#comment
+feedback_link: https://hyperskill.org/learn/step/9906#comment
 status: Solved
 feedback:
   message: Congratulations!
-  time: "Tue, 25 Jul 2023 21:18:46 UTC"
+  time: "Tue, 25 Jul 2023 21:20:53 UTC"
 record: -1
