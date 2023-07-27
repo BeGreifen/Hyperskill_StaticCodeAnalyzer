@@ -20,7 +20,9 @@ class CodeAnalyzer:
         self.ck_s007 = self.__TooManySpaces(id="S007", message="Too many spaces after construction_name")
         self.ck_s008 = self.__ClassCamelCase(id="S008", message="No CamelCase")
         self.ck_s009 = self.__DefLowerCase(id="S009", message="only small letters")
-        self.ck_s010 = self.__SnakeCase(id="S010", message="SnakeCase")
+        self.ck_s010 = self.__SnakeCase(id="S010", message="SnakeCase Function")
+        self.ck_s011 = self.__SnakeCaseVar(id="S011", message="SnakeCase Variable")
+        self.ck_s012 = self.__MutableDefaultArgument(id="S012", message="Mutabl eDefault Argument")
         self.checklist = {k: v for k, v in self.__dict__.items() if k.startswith("ck_")}
 
     def get_lines(self):
@@ -90,7 +92,7 @@ class CodeAnalyzer:
 
         @staticmethod
         def is_snake_case(name):
-            match = re.search(r"_*[a-z]+(?:_[a-z]+)*_*[0-9]*", name)
+            match = re.match(r"_*[a-z]+(?:_[a-z]+)*_*[0-9]*", name)
             return match
 
     class __IsLineTooLong(Check):
@@ -212,12 +214,30 @@ class CodeAnalyzer:
             function_visitor = self.FunctionVisitor(self)
             function_visitor.visit(tree)
 
+    class __SnakeCaseVar(Check):
+        class VariableVisitor(ast.NodeVisitor):
+            def __init__(self, check_instance):
+                self.check_instance = check_instance
+
+            def visit_Name(self, node):
+                if isinstance(node.ctx, ast.Store):  # Check if it's a variable definition
+                    if not self.check_instance.is_snake_case(node.id):
+                        self.check_instance.add_breach(node.lineno, self.check_instance.id, self.check_instance.message)
+                self.generic_visit(node)
+
+        def __init__(self, id, message):
+            super().__init__(id, message, check_by_line=False, check_by_tree=True)
+
+        def run_check(self, tree):
+            variable_visitor = self.VariableVisitor(self)
+            variable_visitor.visit(tree)
+
     class __DefLowerCase(Check):
         def __init__(self, id, message):
             super().__init__(id, message, check_by_line=True, check_by_tree=False)
 
         def run_check(self, line_number, line_to_analyze):
-            regex = r'^def [a-z_]+\('
+            regex = r'^def _*[a-z0-9_]+\('
             if line_to_analyze.strip().startswith('def '):
                 if re.match(regex, line_to_analyze.strip()):
                     pass
@@ -225,6 +245,33 @@ class CodeAnalyzer:
                     pass
                 else:
                     self.add_breach(line_number, self.id, self.message)
+
+    class __MutableDefaultArgument(Check):
+        class FunctionVisitor(ast.NodeVisitor):
+            def __init__(self, check_instance):
+                self.check_instance = check_instance
+
+            def visit_FunctionDef(self, node):
+                for arg in node.args.defaults:
+                    if isinstance(arg, ast.Expr) and isinstance(arg.value, ast.Name):
+                        arg_name = arg.value.id
+                        self.check_default_argument(arg_name, arg.lineno)
+                self.generic_visit(node)
+
+            def check_default_argument(self, arg_name, lineno):
+                if self.check_instance.is_mutable(arg_name):
+                    self.check_instance.add_breach(lineno, self.check_instance.id, self.check_instance.message)
+
+        def __init__(self, id, message):
+            super().__init__(id, message, check_by_line=False, check_by_tree=True)
+
+        def is_mutable(self, name):
+            # Add more checks if needed for other mutable types like lists, sets, etc.
+            return name in ("dict",)
+
+        def run_check(self, tree):
+            function_visitor = self.FunctionVisitor(self)
+            function_visitor.visit(tree)
 
 
 def set_argparse() -> argparse:
