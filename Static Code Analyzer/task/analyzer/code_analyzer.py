@@ -20,6 +20,7 @@ class CodeAnalyzer:
         self.ck_s007 = self.__TooManySpaces(id="S007", message="Too many spaces after construction_name")
         self.ck_s008 = self.__ClassCamelCase(id="S008", message="No CamelCase")
         self.ck_s009 = self.__DefLowerCase(id="S009", message="only small letters")
+        self.ck_s010 = self.__SnakeCase(id="S010", message="SnakeCase")
         self.checklist = {k: v for k, v in self.__dict__.items() if k.startswith("ck_")}
 
     def get_lines(self):
@@ -86,6 +87,11 @@ class CodeAnalyzer:
             if "#" in line_to_analyze:
                 return True
             return False
+
+        @staticmethod
+        def is_snake_case(name):
+            match = re.search(r"_*[a-z]+(?:_[a-z]+)*_*[0-9]*", name)
+            return match
 
     class __IsLineTooLong(Check):
         def __init__(self, id, message, limit):
@@ -184,6 +190,27 @@ class CodeAnalyzer:
                     pass
                 else:
                     self.add_breach(line_number, self.id, self.message)
+
+    class __SnakeCase(Check):
+        class FunctionVisitor(ast.NodeVisitor):
+            def __init__(self, check_instance):
+                self.check_instance = check_instance
+
+            def visit_FunctionDef(self, node):
+                if not self.check_instance.is_snake_case(node.name):
+                    self.check_instance.add_breach(node.lineno, self.check_instance.id, self.check_instance.message)
+
+                for arg in node.args.args:
+                    if not self.check_instance.is_snake_case(arg.arg):
+                        self.check_instance.add_breach(arg.lineno, self.check_instance.id, self.check_instance.message)
+                self.generic_visit(node)
+
+        def __init__(self, id, message):
+            super().__init__(id, message, check_by_line=False, check_by_tree=True)
+
+        def run_check(self, tree):
+            function_visitor = self.FunctionVisitor(self)
+            function_visitor.visit(tree)
 
     class __DefLowerCase(Check):
         def __init__(self, id, message):
