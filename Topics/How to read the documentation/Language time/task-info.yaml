@@ -1,0 +1,18 @@
+type: choice
+is_multiple_choice: false
+options:
+- text: <code>print(nltk.word_tokenize(sentence))</code>
+- text: <code>print(nltk.pos_tag(sentence))</code>
+- text: <code>print(nltk.tokenize(sentence))</code>
+- text: <code>print(nltk.chunk.ne_chunk(sentence))</code>
+files:
+- name: main.py
+  visible: true
+  text: |+
+    #  You can experiment here, it won’t be checked
+
+  learner_created: false
+feedback_link: https://hyperskill.org/learn/step/12134#comment
+status: Solved
+record: -1
+local_check: false

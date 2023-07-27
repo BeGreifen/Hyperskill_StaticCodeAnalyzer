@@ -2,4 +2,4 @@
 # for i, name in enumerate(student_list, start=1):
 #    print(i,name)
 
-[print(*enum_student) for enum_student in enumerate(student_list, start=1)]
+drop = [print(*enum_student) for enum_student in enumerate(student_list, start=1)]

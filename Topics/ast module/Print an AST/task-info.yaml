@@ -1,0 +1,17 @@
+type: code
+files:
+- name: main.py
+  visible: true
+  highlight_level: NONE
+  text: |-
+    import ast
+
+    # put your code here
+  learner_created: false
+feedback_link: https://hyperskill.org/learn/step/15494#comment
+status: Solved
+feedback:
+  message: <html>Correct solution</html>
+  time: "Wed, 26 Jul 2023 10:51:40 UTC"
+record: -1
+submission_language: python3

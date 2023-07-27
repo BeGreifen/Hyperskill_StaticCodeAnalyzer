@@ -16,3 +16,6 @@ content:
 - Regexp sets and ranges
 - Shorthands
 - Files in Python
+- Custom generators
+- How to read the documentation
+- ast module

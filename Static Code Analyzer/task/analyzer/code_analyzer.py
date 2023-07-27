@@ -2,12 +2,14 @@ import os
 import glob
 import argparse
 import re
+import ast
 
 
 class CodeAnalyzer:
     def __init__(self, file):
         self.file = file
         self.content = self.get_lines()
+        self.tree = self.get_tree()
         self.results = []
         self.ck_s001 = self.__IsLineTooLong(id="S001", message="Too Long", limit=79)
         self.ck_s002 = self.__IndentationIsNotFour(id="S002", message="Indentation is not a multiple of four", limit=4)
@@ -26,11 +28,20 @@ class CodeAnalyzer:
             content = file_input.readlines()
         return content
 
+    def get_tree(self):
+        file_input = open(self.file, 'rt')
+        with file_input:
+            content = file_input.read()
+        tree = ast.parse(content)
+        return tree
+
     def analyze(self):
         for name, check_obj in self.checklist.items():
             if check_obj.by_line_check():
                 for line_number, line_content in enumerate(self.content, start=1):
                     check_obj.run_check(line_number, str(line_content))
+            elif check_obj.by_tree_check():
+                check_obj.run_check(self.tree)
             else:
                 check_obj.run_check(self.content)
 
@@ -50,11 +61,12 @@ class CodeAnalyzer:
             print(f"{self.file}: Line {line}: {check} {message}")
 
     class Check:
-        def __init__(self, id: str, message: str, check_by_line: bool):
+        def __init__(self, id: str, message: str, check_by_line: bool, check_by_tree: bool):
             self.id = id
             self.message = message
             self.results = []
             self.check_by_line = check_by_line
+            self.check_by_tree = check_by_tree
 
         def add_breach(self, line_number: int, id: str, message: str):
             self.results.append([line_number, id, message])
@@ -66,8 +78,11 @@ class CodeAnalyzer:
         def by_line_check(self):
             return self.check_by_line
 
+        def by_tree_check(self):
+            return self.check_by_tree
+
         @staticmethod
-        def is_comment_line(self, line_to_analyze):
+        def is_comment_line(line_to_analyze):
             if "#" in line_to_analyze:
                 return True
             return False
@@ -75,7 +90,7 @@ class CodeAnalyzer:
     class __IsLineTooLong(Check):
         def __init__(self, id, message, limit):
             self.limit = limit
-            super().__init__(id, message, check_by_line=True)
+            super().__init__(id, message, check_by_line=True, check_by_tree=False)
 
         def run_check(self, line_number, line_to_analyze):
             if len(line_to_analyze) > self.limit:
@@ -85,7 +100,7 @@ class CodeAnalyzer:
     class __IndentationIsNotFour(Check):
         def __init__(self, id, message, limit):
             self.limit = limit
-            super().__init__(id, message, check_by_line=True)
+            super().__init__(id, message, check_by_line=True, check_by_tree=False)
 
         def run_check(self, line_number, line_to_analyze):
             if (line_to_analyze != "\n") \
@@ -96,7 +111,7 @@ class CodeAnalyzer:
 
     class __EndingSemicolon(Check):
         def __init__(self, id, message):
-            super().__init__(id, message, check_by_line=True)
+            super().__init__(id, message, check_by_line=True, check_by_tree=False)
 
         def run_check(self, line_number, line_to_analyze):
             if line_to_analyze != "\n":
@@ -109,7 +124,7 @@ class CodeAnalyzer:
 
     class __NoTwoSpaces(Check):
         def __init__(self, id, message):
-            super().__init__(id, message, check_by_line=True)
+            super().__init__(id, message, check_by_line=True, check_by_tree=False)
 
         def run_check(self, line_number, line_to_analyze):
             stripped_line_to_analyze = line_to_analyze.lstrip().rstrip()
@@ -125,7 +140,7 @@ class CodeAnalyzer:
 
     class __TODO(Check):
         def __init__(self, id, message):
-            super().__init__(id, message, check_by_line=True)
+            super().__init__(id, message, check_by_line=True, check_by_tree=False)
 
         def run_check(self, line_number, line_to_analyze):
             if "# TODO" in line_to_analyze.upper():
@@ -135,7 +150,7 @@ class CodeAnalyzer:
 
     class __TwoBlankLines(Check):
         def __init__(self, id, message):
-            super().__init__(id, message, check_by_line=False)
+            super().__init__(id, message, check_by_line=False, check_by_tree=False)
 
         def run_check(self, content):
             count = 0
@@ -150,16 +165,15 @@ class CodeAnalyzer:
 
     class __TooManySpaces(Check):
         def __init__(self, id, message):
-            super().__init__(id, message, check_by_line=True)
+            super().__init__(id, message, check_by_line=True, check_by_tree=False)
 
         def run_check(self, line_number, line_to_analyze):
             if line_to_analyze.strip().startswith(('def  ', 'class  ')):
                 self.add_breach(line_number, self.id, self.message)
 
-
     class __ClassCamelCase(Check):
         def __init__(self, id, message):
-            super().__init__(id, message, check_by_line=True)
+            super().__init__(id, message, check_by_line=True, check_by_tree=False)
 
         def run_check(self, line_number, line_to_analyze):
             regex = r'^class [A-Z][a-z0-9]*([A-Z][a-z0-9]*)*[:\(]'
@@ -173,7 +187,7 @@ class CodeAnalyzer:
 
     class __DefLowerCase(Check):
         def __init__(self, id, message):
-            super().__init__(id, message, check_by_line=True)
+            super().__init__(id, message, check_by_line=True, check_by_tree=False)
 
         def run_check(self, line_number, line_to_analyze):
             regex = r'^def [a-z_]+\('
@@ -217,6 +231,7 @@ def run_codeanalyzer(filepath: str):
     if py_file_list is not None:
         for py_file in py_file_list:
             ca = CodeAnalyzer(py_file)
+            ca.get_tree()
             ca.analyze()
             ca.show_results()
 

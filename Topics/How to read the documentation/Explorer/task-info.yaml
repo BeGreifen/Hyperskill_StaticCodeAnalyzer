@@ -1,0 +1,29 @@
+type: matching
+captions:
+- Built-in Functions
+- Built-in Types
+- Data Types
+- Built-in Exceptions
+options:
+- "In this section, you can learn about the different types of data and the operations\
+  \ they support."
+- It contains descriptions of various errors that you may encounter while writing
+  code.
+- This module describes various specialized data types such as date and time.
+- Here's the documentation for the functions that are built into the Python interpreter.
+  You can find out what the function does and what value it returns.
+files:
+- name: main.py
+  visible: true
+  text: |+
+    #  You can experiment here, it won’t be checked
+
+  learner_created: false
+feedback_link: https://hyperskill.org/learn/step/12129#comment
+status: Solved
+record: -1
+ordering:
+- 0
+- 1
+- 2
+- 3
