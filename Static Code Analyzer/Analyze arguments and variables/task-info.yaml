@@ -353,6 +353,12 @@ files:
         print('NO TODO HERE;;')
         pass; # Todo something
   learner_created: true
+- name: app.log
+  visible: true
+  learner_created: true
 feedback_link: https://hyperskill.org/learn/step/9907#comment
-status: Unchecked
+status: Failed
+feedback:
+  message: "Wrong answer in test #2"
+  time: "Thu, 27 Jul 2023 14:08:07 UTC"
 record: 5
