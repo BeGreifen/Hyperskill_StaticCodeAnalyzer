@@ -79,8 +79,11 @@ class CodeAnalyzer:
             self.check_by_line = check_by_line
             self.check_by_tree = check_by_tree
 
-        def add_breach(self, line_number: int, id: str, message: str):
-            self.results.append([line_number, id, message])
+        def add_breach(self, line_number: int, id: str, message: str, false_string: str = None):
+            if false_string is None:
+                false_string = ""
+            self.results.append([line_number, id, message, false_string])
+            logging.warning([line_number, id, message, false_string])
             pass
 
         def get_breaches(self):
@@ -212,7 +215,10 @@ class CodeAnalyzer:
 
                 for arg in node.args.args:
                     if not self.check_instance.is_snake_case(arg.arg):
-                        self.check_instance.add_breach(arg.lineno, self.check_instance.id, self.check_instance.message)
+                        self.check_instance.add_breach(arg.lineno,
+                                                       self.check_instance.id,
+                                                       self.check_instance.message,
+                                                       arg.arg)
                 self.generic_visit(node)
 
         def __init__(self, id, message):
@@ -230,7 +236,10 @@ class CodeAnalyzer:
             def visit_Name(self, node):
                 if isinstance(node.ctx, ast.Store):  # Check if it's a variable definition
                     if not self.check_instance.is_snake_case(node.id):
-                        self.check_instance.add_breach(node.lineno, self.check_instance.id, self.check_instance.message)
+                        self.check_instance.add_breach(node.lineno,
+                                                       self.check_instance.id,
+                                                       self.check_instance.message,
+                                                       node.id)
                 self.generic_visit(node)
 
         def __init__(self, id, message):
