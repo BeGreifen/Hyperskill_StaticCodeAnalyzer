@@ -67,7 +67,8 @@ class CodeAnalyzer:
             for result in check:
                 result_output.append(result)
         result_output.sort(key=lambda x: (x[0], x[1]))
-        for line, check, message in result_output:
+        logging.info(result_output)
+        for line, check, message, _ in result_output:
             print(f"{self.file}: Line {line}: {check} {message}")
 
     class Check:
@@ -274,6 +275,7 @@ class CodeAnalyzer:
             super().__init__(id, message, check_by_line=False, check_by_tree=True)
 
         def is_mutable(self, name):
+            logging.warning(name)
             # Add more checks if needed for other mutable types like lists, sets, etc.
             return name in ("dict",)
 
@@ -306,6 +308,7 @@ def get_files(filepath: str) -> list:
             py_files.append(filepath)
     else:
         py_files = None
+    logging.info(py_files)
     return py_files
 
 
