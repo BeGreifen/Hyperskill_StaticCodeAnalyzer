@@ -54,6 +54,7 @@ class CodeAnalyzer:
                 check_obj.run_check(self.tree)
             else:
                 check_obj.run_check(self.content)
+        self.show_results()
 
     def __collect_results(self):
         for name, check_obj in self.checklist.items():
@@ -281,24 +282,37 @@ class CodeAnalyzer:
                 self.check_instance = check_instance
 
             def visit_FunctionDef(self, node):
-                for arg in node.args.defaults:
-                    if isinstance(arg, ast.Expr) and isinstance(arg.value, ast.Name):
-                        arg_name = arg.value.id
-                        self.check_default_argument(arg_name, arg.lineno)
-                self.generic_visit(node)
+                logging.info("visit_FunctionDef" + str(node))
+                for default in node.args.defaults:
+                    if isinstance(default, (ast.List, ast.Set, ast.Dict)):
+                        logging.info(str(node.args.args[node.args.defaults.index(default)].arg))
+                        arg_name = node.args.args[1].arg
+                        self.check_default_argument(arg_name, default.lineno)
+
+            @staticmethod
+            def get_argument_name(func_node, arg_node):
+                for arg in func_node.args.args:
+                    logging.info("arg: annotation " + str(isinstance(arg, ast.arg)) + str(arg_node == arg.annotation))
+                    if isinstance(arg, ast.arg) and arg_node == arg.annotation:
+                        logging.info(str(arg.arg))
+                        return arg.arg
+                return None
 
             def check_default_argument(self, arg_name, lineno):
-                if self.check_instance.is_mutable(arg_name):
-                    self.check_instance.add_breach(lineno, self.check_instance.id, self.check_instance.message,
+                logging.info(arg_name)
+                self.check_instance.add_breach(lineno,
+                                                   self.check_instance.id,
+                                                   self.check_instance.message,
                                                    arg_name)
 
         def __init__(self, id, message):
             super().__init__(id, message, check_by_line=False, check_by_tree=True)
 
-        def is_mutable(self, name):
-            logging.warning(name)
+        @staticmethod
+        def is_mutable(name):
+            logging.error("is_mutable:" + str(name) + str(bool(name in ("dict", "list", "set"))))
             # Add more checks if needed for other mutable types like lists, sets, etc.
-            return name in ("dict",)
+            return name in ("dict", "list", "set")
 
         def run_check(self, tree):
             function_visitor = self.FunctionVisitor(self)
@@ -338,9 +352,8 @@ def run_codeanalyzer(filepath: str):
     if py_file_list is not None:
         for py_file in py_file_list:
             ca = CodeAnalyzer(py_file)
-            ca.get_tree()
-            ca.analyze()
-            ca.show_results()
+            ca.analyze()  # analyze and show results
+            #  ca.show_results()
 
 
 if __name__ == "__main__":
