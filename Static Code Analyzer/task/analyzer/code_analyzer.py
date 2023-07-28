@@ -104,7 +104,12 @@ class CodeAnalyzer:
         @staticmethod
         def is_snake_case(name):
             match = re.match(r"_*[A-Za-z]+(?:_[a-z]+)*_*[0-9]*", name)
-            return match
+            return bool(match)
+
+        @staticmethod
+        def is_camel_case(name):
+            match = re.match(r"^[A-Z][a-z]+(?:[A-Z][a-z]+)*[0-9]*", name)
+            return bool(match)
 
     class __IsLineTooLong(Check):
         def __init__(self, id, message, limit):
