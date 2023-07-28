@@ -3,8 +3,13 @@ import glob
 import argparse
 import re
 import ast
+import logging
 
-
+logging.basicConfig(level=logging.INFO,
+                    format='%(asctime)s - %(levelname)s - %(message)s',
+                    filename='app.log',  # Specify the file name for logging
+                    filemode='w'  # Use 'w' mode to overwrite the log file on each run, or 'a' to append
+                    )
 class CodeAnalyzer:
     def __init__(self, file):
         self.file = file
@@ -288,6 +293,7 @@ def get_argparse():
 
 def get_files(filepath: str) -> list:
     py_files = []
+    logging.info(filepath)
     if filepath is not None:
         if os.path.isdir(filepath):
             # If filepath is a directory, find all '.py' files in this directory (recursively)
