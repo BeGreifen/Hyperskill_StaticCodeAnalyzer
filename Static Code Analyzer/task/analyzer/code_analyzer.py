@@ -197,17 +197,24 @@ class CodeAnalyzer:
 
     class __ClassCamelCase(Check):
         def __init__(self, id, message):
-            super().__init__(id, message, check_by_line=True, check_by_tree=False)
+            super().__init__(id, message, check_by_line=False, check_by_tree=True)
 
-        def run_check(self, line_number, line_to_analyze):
-            regex = r'^class [A-Z][a-z0-9]*([A-Z][a-z0-9]*)*[:\(]'
-            if line_to_analyze.strip().startswith('class '):
-                if re.match(regex, line_to_analyze.strip()):
-                    pass
-                elif line_to_analyze.strip().startswith(('def  ', 'class  ')):
-                    pass
-                else:
-                    self.add_breach(line_number, self.id, self.message)
+        class ClassFunctionVisitor(ast.NodeVisitor):
+            def __init__(self, check_instance):
+                self.check_instance = check_instance
+
+            def visit_ClassDef(self, node):
+                class_name = node.name
+                if not self.check_instance.is_camel_case(class_name):
+                    self.check_instance.add_breach(node.lineno,
+                                                   self.check_instance.id,
+                                                   self.check_instance.message,
+                                                   class_name)
+                self.generic_visit(node)
+
+        def run_check(self, tree):
+            function_visitor = self.ClassFunctionVisitor(self)
+            function_visitor.visit(tree)
 
     class __SnakeCase(Check):
         class FunctionVisitor(ast.NodeVisitor):
