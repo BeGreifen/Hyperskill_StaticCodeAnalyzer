@@ -10,6 +10,8 @@ logging.basicConfig(level=logging.INFO,
                     filename='app.log',  # Specify the file name for logging
                     filemode='w'  # Use 'w' mode to overwrite the log file on each run, or 'a' to append
                     )
+
+
 class CodeAnalyzer:
     def __init__(self, file):
         self.file = file
@@ -265,7 +267,8 @@ class CodeAnalyzer:
 
             def check_default_argument(self, arg_name, lineno):
                 if self.check_instance.is_mutable(arg_name):
-                    self.check_instance.add_breach(lineno, self.check_instance.id, self.check_instance.message)
+                    self.check_instance.add_breach(lineno, self.check_instance.id, self.check_instance.message,
+                                                   arg_name)
 
         def __init__(self, id, message):
             super().__init__(id, message, check_by_line=False, check_by_tree=True)
